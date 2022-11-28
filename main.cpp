@@ -110,6 +110,10 @@ int main() {
     // Add code here to go through CSV and store matching reviews in a vector (maybe 2, one for each sorting algorithm)
     vector<MovieReview*> selectedReviews;
 
+    //Add these for merge sort time and quick sort time
+    double msTime;
+    double qsTime;
+
     while (run) {
         cout << "Please enter a movie title name." << endl;
         getline(std::cin, input);
@@ -127,8 +131,6 @@ int main() {
         // Get user input for attribute to sort by
         cout << "How would you like to sort the reviews?\n1. By date, ascending\n2. By date, descending\n3. By reviewer name, ascending\n4. By reviewer name, descending\n5. By review score, ascending\n6. By review score, descending" << endl;
         getline(std::cin, input);
-        double msTime;
-        double qsTime;
         try {
             switch (stoi(input)) {
                 case 1:
@@ -137,6 +139,7 @@ int main() {
                     break;
                 case 2:
                     // Call functions here to sort by date (descending)
+                    mergeSortDate(selectedReviews, false, 0, selectedReviews.size() - 1);
                     break;
                 case 3:
                     // Call functions here to sort by reviewer name (ascending)
@@ -144,6 +147,7 @@ int main() {
                     break;
                 case 4:
                     // Call functions here to sort by reviewer name (descending)
+                    mergeSortReviewer(selectedReviews, false, 0, selectedReviews.size() - 1);
                     break;
                 case 5:
                     // Call functions here to sort by review score (ascending)
@@ -151,6 +155,7 @@ int main() {
                     break;
                 case 6:
                     // Call functions here to sort by review score (descending)
+                    mergeSortScore(selectedReviews, false, 0, selectedReviews.size() - 1);
                     break;
                 default:
                     cout << "Invalid input" << endl;
