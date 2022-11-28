@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 int main() {
     // Add code here to load CSV into a data structure. Still need to decide on which to use - possibly a map (int reviewID, Node reviewNode);
