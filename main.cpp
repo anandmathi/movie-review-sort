@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -13,10 +15,12 @@ private:
     int year;
     string reviewer;
     int score;
-
+    string publish;
+    string review;
+    
 public:
 
-    MovieReview(string movieTitle, int movieDay, int movieMonth, int movieYear, string movieReviewer, int movieScore)
+    MovieReview(string movieTitle, int movieDay, int movieMonth, int movieYear, string movieReviewer, int movieScore, string moviePublish, string movieReview)
     {
         title = movieTitle;
         day = movieDay;
@@ -24,6 +28,8 @@ public:
         year = movieYear;
         reviewer = movieReviewer;
         score = movieScore;
+        publish = moviePublish;
+        review = movieReview;
     }
 
     string getTitle()
@@ -56,6 +62,16 @@ public:
         return score;
     }
 
+    string getPublish()
+    {
+        return publish;
+    }
+    
+    string getReview()
+    {
+        return review;
+    }
+
     void print()
     {
         cout << "Title: " << title + " | Date: " << month << "/" << day << "/" << year << " | Reviewer: " << reviewer << " | Score: " << score << endl;
@@ -83,26 +99,116 @@ void quickSortScore(vector<MovieReview*> reviews, bool asc);
 int main() {
 
     vector<MovieReview*> allReviews;
-    // Add code here to load CSV into allReviews
-    //Movie Review Constructor is MovieReview(string movieTitle, int movieDay, int movieMonth, int movieYear, string movieReviewer, string movieScore)
-    //Example: allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "Alejandro", 10));
 
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 213, "A", 100));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 25463, "A", 1000));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 213, "A", 7));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 20435313, "A", 6));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "D", 509));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2014563, "D", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "C", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 11, 2, 2013, "A", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 10, 4, 2013, "A", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 3, 2013, "B", 500));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "G", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 23413, "H", 470));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 201, "E", 470));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2, "A", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 213, "Z", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 23, "ZE", 10));
+    // Add code here to load CSV into allReviews
+    ifstream inputFile;
+    inputFile.open("rottentomatoes-400k.csv");
+
+    string fileData;
+
+    //clear header line
+    getline(inputFile, fileData);
+    fileData = "";
+
+    while(getline(inputFile, fileData)){
+
+        int index = 0;
+        string titleCSV = "";
+        string date = "";
+        int dayCSV = 0;
+        int monthCSV = 0;
+        int yearCSV = 0;
+        string reviewerCSV = "";
+        int scoreCSV = 0;
+        string publishCSV = "";
+        string reviewCSV = "";
+        string temp = "";
+
+        istringstream line(fileData);
+
+        //Getting the index and not storing it
+        getline(line, temp, ',');
+
+        //Getting the title
+        getline(line, titleCSV, ',');
+
+        //Getting the reviewer
+        getline(line, reviewerCSV, ',');
+
+        //Getting the publisher
+        getline(line, publishCSV, ',');
+
+        //Getting the review
+        string comment;
+
+        getline(line, comment);
+        int quotePosOne = comment.find_first_of('"');
+        int quotePosTwo = comment.find_last_of('"');
+        string newReview = "";
+
+        //if there are quotes around the review
+        if(quotePosOne != string::npos){
+            reviewCSV = comment.substr(1, quotePosTwo - 1);
+            newReview = comment.substr(quotePosTwo + 2);
+
+            istringstream newLine(newReview);
+
+            //Getting the date
+            getline(newLine, date, ',');
+
+            int slashOne = date.find_first_of("/");
+            int slashTwo = date.find_last_of("/");
+        
+            //Splitting the date into day, month, and year
+            dayCSV = atoi(date.substr(0, slashOne).c_str());
+            monthCSV = atoi(date.substr(slashOne + 1, slashTwo - 1).c_str());
+            yearCSV = atoi(date.substr(slashTwo + 1).c_str());
+
+            //Getting the score
+            getline(newLine, temp);
+            scoreCSV = atoi(temp.c_str());
+        }
+
+        //If there aren't quotes around the reviews -> meaning there are no commas in the reviews
+        else{
+            int comma = comment.find(',');
+            reviewCSV = comment.substr(0, comma);
+            newReview = comment.substr(comma + 1);
+
+            istringstream newLine(newReview);
+
+            //Getting the date
+            getline(newLine, date, ',');
+
+            int posOne = date.find_first_of("/");
+            int posTwo = date.find_last_of("/");
+        
+            //Splitting the date into day, month, and year
+            dayCSV = atoi(date.substr(0, posOne).c_str());
+            monthCSV = atoi(date.substr(posOne + 1, posTwo - 1).c_str());
+            yearCSV = atoi(date.substr(posTwo + 1).c_str());
+
+            //Getting the score
+            getline(newLine, temp);
+            scoreCSV = atoi(temp.c_str());
+        }
+
+        //Movie Review Constructor is MovieReview (string movieTitle, int movieDay, int movieMonth, int movieYear, string movieReviewer, int movieScore, string moviePublish, string movieReview)
+        //Example: allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "Alejandro", 10));
+        allReviews.push_back(new MovieReview(titleCSV, dayCSV, monthCSV, yearCSV, reviewerCSV, scoreCSV, publishCSV, reviewCSV));
+    }
+
+    //For testing the values store in allReviews
+    for(int i= 0; i < 20; i++){
+    cout << allReviews.at(i)->getTitle() << endl;
+    cout << allReviews.at(i)->getPublish() << endl;
+    cout << allReviews.at(i)->getReviewer() << endl;
+    cout << allReviews.at(i)->getReview() << endl;
+    cout << allReviews.at(i)->getDay() << endl;
+    cout << allReviews.at(i)->getMonth() << endl;
+    cout << allReviews.at(i)->getYear() << endl;
+    cout << allReviews.at(i)->getScore() << endl;
+    }
 
     string input;
     bool run = true;
