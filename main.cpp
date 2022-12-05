@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -13,10 +15,12 @@ private:
     int year;
     string reviewer;
     int score;
-
+    string publish;
+    string review;
+    
 public:
 
-    MovieReview(string movieTitle, int movieDay, int movieMonth, int movieYear, string movieReviewer, int movieScore)
+    MovieReview(string movieTitle, int movieDay, int movieMonth, int movieYear, string movieReviewer, int movieScore, string moviePublish, string movieReview)
     {
         title = movieTitle;
         day = movieDay;
@@ -24,6 +28,8 @@ public:
         year = movieYear;
         reviewer = movieReviewer;
         score = movieScore;
+        publish = moviePublish;
+        review = movieReview;
     }
 
     string getTitle()
@@ -56,6 +62,16 @@ public:
         return score;
     }
 
+    string getPublish()
+    {
+        return publish;
+    }
+    
+    string getReview()
+    {
+        return review;
+    }
+
     void print()
     {
         cout << "Title: " << title + " | Date: " << month << "/" << day << "/" << year << " | Reviewer: " << reviewer << " | Score: " << score << endl;
@@ -68,44 +84,119 @@ void printReviews(vector<MovieReview*> reviews);
 //SortingMethods
 
 //for merge sort, call mergeSortDate. asc is true when the list should be sorted ascending. set low to 0 and high to reviews size - 1
-void mergeSortDate(vector<MovieReview*>& reviews, bool asc, int low, int high);
-void mergeDates(vector<MovieReview*>& reviews, bool asc, int low, int mid, int high);
-void quickSortDate(vector<MovieReview*>& reviews, int left, int right, bool asc);
-int partionDate(vector<MovieReview*>& reviews, int left, int right, bool asc);
+void mergeSortDate(vector<MovieReview*> &reviews, bool asc, int low, int high);
+void mergeDates(vector<MovieReview*> &reviews, bool asc, int low, int mid, int high);
+void quickSortDate(vector<MovieReview*> reviews, bool asc);
 
 void mergeSortReviewer(vector<MovieReview*>& reviews, bool asc, int low, int high);
 void mergeReviewers(vector<MovieReview*>& reviews, bool asc, int low, int mid, int high);
-void quickSortReviewer(vector<MovieReview*>& reviews, int left, int right, bool asc);
-int partionReviewer(vector<MovieReview*>& reviews, int left, int right, bool asc);
+void quickSortReviewer(vector<MovieReview*> reviews, bool asc);
 
 void mergeSortScore(vector<MovieReview*>& reviews, bool asc, int low, int high);
 void mergeScores(vector<MovieReview*>& reviews, bool asc, int low, int mid, int high);
-void quickSortScore(vector<MovieReview*>& reviews, int left, int right, bool asc);
-int partionScore(vector<MovieReview*>& reviews, int left, int right, bool asc);
+void quickSortScore(vector<MovieReview*> reviews, bool asc);
 
 int main() {
 
     vector<MovieReview*> allReviews;
-    // Add code here to load CSV into allReviews
-    //Movie Review Constructor is MovieReview(string movieTitle, int movieDay, int movieMonth, int movieYear, string movieReviewer, string movieScore)
-    //Example: allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "Alejandro", 10));
 
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 213, "A", 100));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 25463, "A", 1000));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 213, "A", 7));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 20435313, "A", 6));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "D", 509));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2014563, "D", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "C", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 11, 2, 2013, "A", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 10, 4, 2013, "A", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 3, 2013, "B", 500));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "G", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 23413, "H", 470));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 201, "E", 470));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2, "A", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 213, "Z", 10));
-    allReviews.push_back(new MovieReview("Big Bang", 12, 2, 23, "ZE", 10));
+    // Add code here to load CSV into allReviews
+    ifstream inputFile;
+    inputFile.open("rottentomatoes-400k.csv");
+
+    string fileData;
+
+    //clear header line
+    getline(inputFile, fileData);
+    fileData = "";
+
+    while(getline(inputFile, fileData)){
+
+        int index = 0;
+        string titleCSV = "";
+        string date = "";
+        int dayCSV = 0;
+        int monthCSV = 0;
+        int yearCSV = 0;
+        string reviewerCSV = "";
+        int scoreCSV = 0;
+        string publishCSV = "";
+        string reviewCSV = "";
+        string temp = "";
+
+        istringstream line(fileData);
+
+        //Getting the index and not storing it
+        getline(line, temp, ',');
+
+        //Getting the title
+        getline(line, titleCSV, ',');
+
+        //Getting the reviewer
+        getline(line, reviewerCSV, ',');
+
+        //Getting the publisher
+        getline(line, publishCSV, ',');
+
+        //Getting the review
+        string comment;
+
+        getline(line, comment);
+        int quotePosOne = comment.find_first_of('"');
+        int quotePosTwo = comment.find_last_of('"');
+        string newReview = "";
+
+        //if there are quotes around the review
+        if(quotePosOne != string::npos){
+            reviewCSV = comment.substr(1, quotePosTwo - 1);
+            newReview = comment.substr(quotePosTwo + 2);
+
+            istringstream newLine(newReview);
+
+            //Getting the date
+            getline(newLine, date, ',');
+
+            int slashOne = date.find_first_of("/");
+            int slashTwo = date.find_last_of("/");
+        
+            //Splitting the date DD/MM/YYYY into day, month, and year
+            dayCSV = atoi(date.substr(0, slashOne).c_str());
+            monthCSV = atoi(date.substr(slashOne + 1, slashTwo - 1).c_str());
+            yearCSV = atoi(date.substr(slashTwo + 1).c_str());
+
+            //Getting the score
+            getline(newLine, temp);
+            scoreCSV = atoi(temp.c_str());
+        }
+
+        //If there aren't quotes around the reviews -> meaning there are no commas in the reviews
+        else{
+            int comma = comment.find(',');
+            reviewCSV = comment.substr(0, comma);
+            newReview = comment.substr(comma + 1);
+
+            istringstream newLine(newReview);
+
+            //Getting the date
+            getline(newLine, date, ',');
+
+            int posOne = date.find_first_of("/");
+            int posTwo = date.find_last_of("/");
+        
+            //Splitting the date into day, month, and year
+            dayCSV = atoi(date.substr(0, posOne).c_str());
+            monthCSV = atoi(date.substr(posOne + 1, posTwo - 1).c_str());
+            yearCSV = atoi(date.substr(posTwo + 1).c_str());
+
+            //Getting the score
+            getline(newLine, temp);
+            scoreCSV = atoi(temp.c_str());
+        }
+
+        //Movie Review Constructor is MovieReview (string movieTitle, int movieDay, int movieMonth, int movieYear, string movieReviewer, int movieScore, string moviePublish, string movieReview)
+        //Example: allReviews.push_back(new MovieReview("Big Bang", 12, 2, 2013, "Alejandro", 10));
+        allReviews.push_back(new MovieReview(titleCSV, dayCSV, monthCSV, yearCSV, reviewerCSV, scoreCSV, publishCSV, reviewCSV));
+    }
 
     string input;
     bool run = true;
@@ -136,39 +227,33 @@ int main() {
         getline(std::cin, input);
         try {
             switch (stoi(input)) {
-            case 1:
-                // Call functions here to sort by date (ascending)
-                quickSortDate(selectedReviews, 0, selectedReviews.size() - 1, true);
-                //mergeSortDate(selectedReviews, true, 0, selectedReviews.size() - 1);
-                break;
-            case 2:
-                // Call functions here to sort by date (descending)
-                quickSortDate(selectedReviews, 0, selectedReviews.size() - 1, false);
-                //mergeSortDate(selectedReviews, false, 0, selectedReviews.size() - 1);
-                break;
-            case 3:
-                // Call functions here to sort by reviewer name (ascending)
-                quickSortReviewer(selectedReviews, 0, selectedReviews.size() - 1, true);
-                //mergeSortReviewer(selectedReviews, true, 0, selectedReviews.size() - 1);
-                break;
-            case 4:
-                // Call functions here to sort by reviewer name (descending)
-                quickSortReviewer(selectedReviews, 0, selectedReviews.size() - 1, false);
-                //mergeSortReviewer(selectedReviews, false, 0, selectedReviews.size() - 1);
-                break;
-            case 5:
-                // Call functions here to sort by review score (ascending)
-                quickSortScore(selectedReviews, 0, selectedReviews.size() - 1, true);
-                //mergeSortScore(selectedReviews, true, 0, selectedReviews.size() - 1);
-                break;
-            case 6:
-                // Call functions here to sort by review score (descending)
-                quickSortScore(selectedReviews, 0, selectedReviews.size() - 1, false);
-                //mergeSortScore(selectedReviews, false, 0, selectedReviews.size() - 1);
-                break;
-            default:
-                cout << "Invalid input" << endl;
-                return 0;
+                case 1:
+                    // Call functions here to sort by date (ascending)
+                    mergeSortDate(selectedReviews, true, 0, selectedReviews.size()-1);
+                    break;
+                case 2:
+                    // Call functions here to sort by date (descending)
+                    mergeSortDate(selectedReviews, false, 0, selectedReviews.size() - 1);
+                    break;
+                case 3:
+                    // Call functions here to sort by reviewer name (ascending)
+                    mergeSortReviewer(selectedReviews, true, 0, selectedReviews.size() - 1);
+                    break;
+                case 4:
+                    // Call functions here to sort by reviewer name (descending)
+                    mergeSortReviewer(selectedReviews, false, 0, selectedReviews.size() - 1);
+                    break;
+                case 5:
+                    // Call functions here to sort by review score (ascending)
+                    mergeSortScore(selectedReviews, true, 0, selectedReviews.size() - 1);
+                    break;
+                case 6:
+                    // Call functions here to sort by review score (descending)
+                    mergeSortScore(selectedReviews, false, 0, selectedReviews.size() - 1);
+                    break;
+                default:
+                    cout << "Invalid input" << endl;
+                    return 0;
             }
         }
         catch (invalid_argument& e) {
@@ -187,29 +272,29 @@ int main() {
         */
 
         cout << "Data has been sorted. Printing the first 20 reviews:\n";
-        for (int i = 0; (i < 20) && (i < selectedReviews.size()); i++) {
+        for (int i = 0; (i < 20) && (i<selectedReviews.size()); i++) {
             selectedReviews.at(i)->print();
         }
 
         // Get user input for next step
         cout << "How would you like to proceed?\n1. Search another movie\n2. Bookmark this movie\n3. View my bookmarks\n4. Exit" << endl;
         std::cin >> input;
-        switch (stoi(input)) {
-        case 1:
-            std::cin.ignore(1000, '\n');
-            continue;
-        case 2:
-            // Add code here to push review node to vector of bookmarks
-            break;
-        case 3:
-            // Add code here to print vector of bookmarks w/ relevant info
-            break;
-        case 4:
-            run = false;
-            break;
-        default:
-            cout << "Invalid input" << endl;
-            return 0;
+        switch(stoi(input)) {
+            case 1:
+                std::cin.ignore(1000,'\n');
+                continue;
+            case 2:
+                // Add code here to push review node to vector of bookmarks
+                break;
+            case 3:
+                // Add code here to print vector of bookmarks w/ relevant info
+                break;
+            case 4:
+                run = false;
+                break;
+            default:
+                cout << "Invalid input" << endl;
+                return 0;
         }
     }
 }
@@ -222,7 +307,7 @@ void printReviews(vector<MovieReview*> reviews)
     }
 }
 
-void mergeSortDate(vector<MovieReview*>& reviews, bool asc, int low, int high)
+void mergeSortDate(vector<MovieReview*> &reviews, bool asc, int low, int high)
 {
     if (high <= low)
     {
@@ -235,7 +320,7 @@ void mergeSortDate(vector<MovieReview*>& reviews, bool asc, int low, int high)
     mergeDates(reviews, asc, low, mid, high);
 }
 
-void mergeDates(vector<MovieReview*>& reviews, bool asc, int low, int mid, int high)
+void mergeDates(vector<MovieReview*> &reviews, bool asc, int low, int mid, int high)
 {
     //Create temporary vectors
     vector<MovieReview*> left, right;
@@ -246,9 +331,9 @@ void mergeDates(vector<MovieReview*>& reviews, bool asc, int low, int mid, int h
         left.push_back(reviews.at(low + i));
     }
 
-    for (int i = 0; i < high - mid; i++)
+    for (int i = 0; i < high-mid; i++)
     {
-        right.push_back(reviews.at(mid + i + 1));
+        right.push_back(reviews.at(mid+i+1));
     }
 
     int leftIndex = 0, rightIndex = 0;
@@ -353,7 +438,7 @@ void mergeDates(vector<MovieReview*>& reviews, bool asc, int low, int mid, int h
             reviews.at(i) = left.at(leftIndex);
             leftIndex++;
         }
-        else if (rightIndex < right.size())
+        else if(rightIndex < right.size())
         {
             reviews.at(i) = right.at(rightIndex);
             rightIndex++;
@@ -361,104 +446,8 @@ void mergeDates(vector<MovieReview*>& reviews, bool asc, int low, int mid, int h
     }
 }
 
-void quickSortDate(vector<MovieReview*>& reviews, int left, int right, bool asc)
+void quickSortDate(vector<MovieReview*> reviews, bool asc)
 {
-    if (left < right)
-    {
-
-        int pivot = partionDate(reviews, left, right, asc);
-
-        quickSortDate(reviews, left, pivot - 1, asc);
-        quickSortDate(reviews, pivot + 1, right, asc);
-    }
-    else
-    {
-        return;
-    }
-}
-
-int partionDate(vector<MovieReview*>& reviews, int left, int right, bool asc)
-{
-    int leftIndex = left;
-    int pivot = right;
-
-    for (int i = left; i < right; i++)
-    {
-        if (asc)
-        {
-            if (reviews.at(i)->getYear() < reviews.at(pivot)->getYear())
-            {
-                MovieReview* temp = reviews.at(leftIndex);
-                reviews.at(leftIndex) = reviews.at(i);
-                reviews.at(i) = temp;
-
-                leftIndex++;
-            }
-            else if (reviews.at(i)->getYear() == reviews.at(pivot)->getYear())
-            {
-                if (reviews.at(i)->getMonth() < reviews.at(pivot)->getMonth())
-                {
-                    MovieReview* temp = reviews.at(leftIndex);
-                    reviews.at(leftIndex) = reviews.at(i);
-                    reviews.at(i) = temp;
-
-                    leftIndex++;
-                }
-                else if (reviews.at(i)->getMonth() == reviews.at(pivot)->getMonth())
-                {
-                    if (reviews.at(i)->getDay() < reviews.at(pivot)->getDay())
-                    {
-                        MovieReview* temp = reviews.at(leftIndex);
-                        reviews.at(leftIndex) = reviews.at(i);
-                        reviews.at(i) = temp;
-
-                        leftIndex++;
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (reviews.at(i)->getYear() > reviews.at(pivot)->getYear())
-            {
-                MovieReview* temp = reviews.at(leftIndex);
-                reviews.at(leftIndex) = reviews.at(i);
-                reviews.at(i) = temp;
-
-                leftIndex++;
-            }
-            else if (reviews.at(i)->getYear() == reviews.at(pivot)->getYear())
-            {
-                if (reviews.at(i)->getMonth() > reviews.at(pivot)->getMonth())
-                {
-                    MovieReview* temp = reviews.at(leftIndex);
-                    reviews.at(leftIndex) = reviews.at(i);
-                    reviews.at(i) = temp;
-
-                    leftIndex++;
-                }
-                else if (reviews.at(i)->getMonth() == reviews.at(pivot)->getMonth())
-                {
-                    if (reviews.at(i)->getDay() > reviews.at(pivot)->getDay())
-                    {
-                        MovieReview* temp = reviews.at(leftIndex);
-                        reviews.at(leftIndex) = reviews.at(i);
-                        reviews.at(i) = temp;
-
-                        leftIndex++;
-                    }
-                }
-            }
-        }
-    }
-
-    leftIndex;
-
-    MovieReview* temp = reviews.at(leftIndex);
-    reviews.at(leftIndex) = reviews.at(pivot);
-    reviews.at(pivot) = temp;
-
-    return leftIndex;
 
 }
 
@@ -543,63 +532,6 @@ void mergeReviewers(vector<MovieReview*>& reviews, bool asc, int low, int mid, i
     }
 }
 
-void quickSortReviewer(vector<MovieReview*>& reviews, int left, int right, bool asc)
-{
-    if (left < right)
-    {
-
-        int pivot = partionReviewer(reviews, left, right, asc);
-
-        quickSortReviewer(reviews, left, pivot - 1, asc);
-        quickSortReviewer(reviews, pivot + 1, right, asc);
-    }
-    else
-    {
-        return;
-    }
-}
-
-int partionReviewer(vector<MovieReview*>& reviews, int left, int right, bool asc)
-{
-    int leftIndex = left;
-    int pivot = right;
-
-    for (int i = left; i < right; i++)
-    {
-        if (asc)
-        {
-            if (reviews.at(i)->getReviewer() < reviews.at(pivot)->getReviewer())
-            {
-                MovieReview* temp = reviews.at(leftIndex);
-                reviews.at(leftIndex) = reviews.at(i);
-                reviews.at(i) = temp;
-
-                leftIndex++;
-            }
-        }
-        else
-        {
-            if (reviews.at(i)->getReviewer() > reviews.at(pivot)->getReviewer())
-            {
-                MovieReview* temp = reviews.at(leftIndex);
-                reviews.at(leftIndex) = reviews.at(i);
-                reviews.at(i) = temp;
-
-                leftIndex++;
-            }
-        }
-    }
-
-    leftIndex;
-
-    MovieReview* temp = reviews.at(leftIndex);
-    reviews.at(leftIndex) = reviews.at(pivot);
-    reviews.at(pivot) = temp;
-
-    return leftIndex;
-
-}
-
 void mergeSortScore(vector<MovieReview*>& reviews, bool asc, int low, int high)
 {
     if (high <= low)
@@ -679,61 +611,4 @@ void mergeScores(vector<MovieReview*>& reviews, bool asc, int low, int mid, int 
             rightIndex++;
         }
     }
-}
-
-void quickSortScore(vector<MovieReview*>& reviews, int left, int right, bool asc)
-{
-    if (left < right)
-    {
-
-        int pivot = partionScore(reviews, left, right, asc);
-
-        quickSortScore(reviews, left, pivot - 1, asc);
-        quickSortScore(reviews, pivot + 1, right, asc);
-    }
-    else
-    {
-        return;
-    }
-}
-
-int partionScore(vector<MovieReview*>& reviews, int left, int right, bool asc)
-{
-    int leftIndex = left;
-    int pivot = right;
-
-    for (int i = left; i < right; i++)
-    {
-        if (asc)
-        {
-            if (reviews.at(i)->getScore() < reviews.at(pivot)->getScore())
-            {
-                MovieReview* temp = reviews.at(leftIndex);
-                reviews.at(leftIndex) = reviews.at(i);
-                reviews.at(i) = temp;
-
-                leftIndex++;
-            }
-        }
-        else
-        {
-            if (reviews.at(i)->getScore() > reviews.at(pivot)->getScore())
-            {
-                MovieReview* temp = reviews.at(leftIndex);
-                reviews.at(leftIndex) = reviews.at(i);
-                reviews.at(i) = temp;
-
-                leftIndex++;
-            }
-        }
-    }
-
-    leftIndex;
-
-    MovieReview* temp = reviews.at(leftIndex);
-    reviews.at(leftIndex) = reviews.at(pivot);
-    reviews.at(pivot) = temp;
-
-    return leftIndex;
-
 }
