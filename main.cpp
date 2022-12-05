@@ -1,10 +1,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
+<<<<<<< HEAD
 #include <fstream>
 #include <sstream>
+=======
+#include <chrono>
+>>>>>>> 97cf94b0a6d744cd3187c8d3e922a0efaec722f7
 
 using namespace std;
+using namespace std::chrono;
 
 class MovieReview
 {
@@ -205,8 +210,8 @@ int main() {
     vector<MovieReview*> selectedReviews;
 
     //Add these for merge sort time and quick sort time
-    double msTime;
-    double qsTime;
+    std::chrono::microseconds msTime;
+    std::chrono::microseconds qsTime;
 
     while (run) {
         cout << "Please enter a movie title name." << endl;
@@ -222,11 +227,19 @@ int main() {
             }
         }
 
+        vector<MovieReview*> copySelectedReviews;
+
+        for (int i = 0; i < selectedReviews.size(); i++)
+        {
+            copySelectedReviews.push_back(selectedReviews.at(i));
+        }
+
         // Get user input for attribute to sort by
         cout << "How would you like to sort the reviews?\n1. By date, ascending\n2. By date, descending\n3. By reviewer name, ascending\n4. By reviewer name, descending\n5. By review score, ascending\n6. By review score, descending" << endl;
         getline(std::cin, input);
         try {
             switch (stoi(input)) {
+<<<<<<< HEAD
                 case 1:
                     // Call functions here to sort by date (ascending)
                     mergeSortDate(selectedReviews, true, 0, selectedReviews.size()-1);
@@ -254,6 +267,95 @@ int main() {
                 default:
                     cout << "Invalid input" << endl;
                     return 0;
+=======
+            case 1:
+            {
+                // Call functions here to sort by date (ascending)
+                auto start = high_resolution_clock::now();
+                mergeSortDate(selectedReviews, true, 0, selectedReviews.size() - 1);
+                auto stop = high_resolution_clock::now();
+                msTime = duration_cast<microseconds>(stop - start);
+
+                start = high_resolution_clock::now();
+                quickSortDate(copySelectedReviews, 0, copySelectedReviews.size() - 1, true);
+                stop = high_resolution_clock::now();
+                qsTime = duration_cast<microseconds>(stop - start);
+                break;
+            }
+            case 2:
+            {
+                // Call functions here to sort by date (descending)
+                auto start = high_resolution_clock::now();
+                mergeSortDate(selectedReviews, false, 0, selectedReviews.size() - 1);
+                auto stop = high_resolution_clock::now();
+                msTime = duration_cast<microseconds>(stop - start);
+
+                start = high_resolution_clock::now();
+                quickSortDate(copySelectedReviews, 0, copySelectedReviews.size() - 1, false);
+                stop = high_resolution_clock::now();
+                qsTime = duration_cast<microseconds>(stop - start);
+                break;
+            }
+            case 3:
+            {
+                // Call functions here to sort by reviewer name (ascending)
+                auto start = high_resolution_clock::now();
+                mergeSortReviewer(selectedReviews, true, 0, selectedReviews.size() - 1);
+                auto stop = high_resolution_clock::now();
+                msTime = duration_cast<microseconds>(stop - start);
+
+                start = high_resolution_clock::now();
+                quickSortReviewer(copySelectedReviews, 0, copySelectedReviews.size() - 1, true);
+                stop = high_resolution_clock::now();
+                qsTime = duration_cast<microseconds>(stop - start);
+                break;
+            }
+            case 4:
+            {
+                // Call functions here to sort by reviewer name (descending)
+                auto start = high_resolution_clock::now();
+                mergeSortReviewer(selectedReviews, false, 0, selectedReviews.size() - 1);
+                auto stop = high_resolution_clock::now();
+                msTime = duration_cast<microseconds>(stop - start);
+
+                start = high_resolution_clock::now();
+                quickSortReviewer(copySelectedReviews, 0, copySelectedReviews.size() - 1, false);
+                stop = high_resolution_clock::now();
+                qsTime = duration_cast<microseconds>(stop - start);
+                break;
+            }
+            case 5:
+            {
+                // Call functions here to sort by review score (ascending)
+                auto start = high_resolution_clock::now();
+                mergeSortScore(selectedReviews, true, 0, selectedReviews.size() - 1);
+                auto stop = high_resolution_clock::now();
+                msTime = duration_cast<microseconds>(stop - start);
+
+                start = high_resolution_clock::now();
+                quickSortScore(copySelectedReviews, 0, copySelectedReviews.size() - 1, true);
+                stop = high_resolution_clock::now();
+                qsTime = duration_cast<microseconds>(stop - start);
+                break;
+            }
+            case 6:
+            {
+                // Call functions here to sort by review score (descending)
+                auto start = high_resolution_clock::now();
+                mergeSortScore(selectedReviews, false, 0, selectedReviews.size() - 1);
+                auto stop = high_resolution_clock::now();
+                msTime = duration_cast<microseconds>(stop - start);
+
+                start = high_resolution_clock::now();
+                quickSortScore(copySelectedReviews, 0, copySelectedReviews.size() - 1, false);
+                stop = high_resolution_clock::now();
+                qsTime = duration_cast<microseconds>(stop - start);
+                break;
+            }
+            default:
+                cout << "Invalid input" << endl;
+                return 0;
+>>>>>>> 97cf94b0a6d744cd3187c8d3e922a0efaec722f7
             }
         }
         catch (invalid_argument& e) {
@@ -261,6 +363,7 @@ int main() {
             return 0;
         }
 
+<<<<<<< HEAD
         /* Basic pseudocode - will change depending on implementation of the sorting algorithms
         cout << "Data has been sorted. Printing the first 20 reviews:\n";
         for (int i = 0; i < 20; i++) {
@@ -273,6 +376,10 @@ int main() {
 
         cout << "Data has been sorted. Printing the first 20 reviews:\n";
         for (int i = 0; (i < 20) && (i<selectedReviews.size()); i++) {
+=======
+        cout << "Data has been sorted.\n Merge Sort Time: " << msTime.count() << " microseconds.\n Quick Sort Time: " << qsTime.count() << " microseconds.\n Printing the first 20 reviews:\n";
+        for (int i = 0; (i < 20) && (i < selectedReviews.size()); i++) {
+>>>>>>> 97cf94b0a6d744cd3187c8d3e922a0efaec722f7
             selectedReviews.at(i)->print();
         }
 
