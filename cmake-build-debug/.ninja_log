@@ -1,0 +1,18 @@
+# ninja log v5
+1	430	0	CMakeFiles/Project3_autogen	32d518dc1f71fd27
+1	430	0	Project3_autogen/mocs_compilation.cpp	32d518dc1f71fd27
+1	430	0	Project3_autogen/include/ui_mainwindow.h	32d518dc1f71fd27
+1	430	0	/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/Project3_autogen	32d518dc1f71fd27
+1	430	0	/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/Project3_autogen/mocs_compilation.cpp	32d518dc1f71fd27
+1	430	0	/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/Project3_autogen/include/ui_mainwindow.h	32d518dc1f71fd27
+431	1051	1670354629707393549	CMakeFiles/Project3.dir/moviereview.cpp.o	188455a2ac01acc2
+431	1636	1670354630288439142	CMakeFiles/Project3.dir/listdelegate.cpp.o	63116e5984b7435f
+430	1722	1670354630374752667	CMakeFiles/Project3.dir/Project3_autogen/mocs_compilation.cpp.o	3afab7ddb6689db3
+430	2048	1670354630701995240	CMakeFiles/Project3.dir/main.cpp.o	bffa6be5b044a7fc
+3	20	0	CMakeFiles/Project3_autogen	32d518dc1f71fd27
+3	20	0	Project3_autogen/mocs_compilation.cpp	32d518dc1f71fd27
+3	20	0	Project3_autogen/include/ui_mainwindow.h	32d518dc1f71fd27
+3	20	0	/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/Project3_autogen	32d518dc1f71fd27
+3	20	0	/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/Project3_autogen/mocs_compilation.cpp	32d518dc1f71fd27
+3	20	0	/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/Project3_autogen/include/ui_mainwindow.h	32d518dc1f71fd27
+21	1166	1670354664565423009	CMakeFiles/Project3.dir/listdelegate.cpp.o	63116e5984b7435f

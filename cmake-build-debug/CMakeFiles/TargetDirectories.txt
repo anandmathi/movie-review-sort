@@ -1,0 +1,8 @@
+/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/install/local.dir
+/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/install/strip.dir
+/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/install.dir
+/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/Project3.dir
+/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/list_install_components.dir
+/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/cmake-build-debug/CMakeFiles/Project3_autogen.dir
