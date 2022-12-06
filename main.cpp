@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     std::vector<MovieReview*> allReviews;
 
     std::ifstream inputFile;
-    inputFile.open("/Users/anandmathi/Desktop/School/2022-2023 Semester 1/p3/Project3/rottentomatoes-400k.csv");
+    inputFile.open("rottentomatoes-400k.csv");
     if (inputFile.good()) {
         std::cout << "open" << std::endl;
     }
